@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ForgeMarket • Handmade + Bookable</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&amp;family=Playfair+Display:wght@700&amp;display=swap');
+    
+    :root {
+      --cream: #f9f4eb;
+      --earth: #3a2f2a;
+      --terracotta: #b85d42;
+      --sage: #5d6f5f;
+      --gold: #c5a46e;
+      --warm: #d4a373;
+    }
+    
+    body {
+      font-family: 'Instrument Sans', system_ui, -apple-system, sans-serif;
+    }
+    
+    .font-display {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .market-bg {
+      background-color: #f9f4eb;
+    }
+
+    .section-header {
+      font-size: 2.25rem;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .maker-card {
+      transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+                  box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .maker-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+
+    .item-card {
+      transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .item-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .nav-active {
+      color: #b85d42;
+      font-weight: 600;
+    }
+
+    .earthy-btn {
+      background-color: #b85d42;
+      color: white;
+      transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .earthy-btn:hover {
+      background-color: #a14d36;
+      transform: translateY(-1px);
+    }
+
+    .sage-btn {
+      background-color: #5d6f5f;
+      color: white;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+    }
+
+    .price-tag {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .category-pill {
+      transition: all 0.15s ease;
+    }
+    .category-pill.active {
+      background-color: #3a2f2a;
+      color: #f9f4eb;
+      border-color: #3a2f2a;
+    }
+
+    .modal {
+      animation: modalEnter 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @keyframes modalEnter {
+      from { opacity: 0; transform: scale(0.96) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .market-divider {
+      background: linear-gradient(to right, transparent, #d4a37322, transparent);
+    }
+
+    .stat-number {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .booking-slot {
+      transition: all 0.1s ease;
+    }
+    .booking-slot:hover {
+      background-color: #d4a373;
+      color: white;
+      border-color: #d4a373;
+    }
+    .booking-slot.selected {
+      background-color: #b85d42;
+      color: white;
+      border-color: #b85d42;
+    }
+
+    .nav-link {
+      position: relative;
+    }
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #b85d42;
+      transition: width 0.2s ease;
+    }
+    .nav-link:hover:after {
+      width: 100%;
+    }
+
+    .forge-badge {
+      background: linear-gradient(90deg, #c5a46e, #d4a373);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 600;
+    }
+
+    .savings {
+      color: #5d6f5f;
+      font-weight: 600;
+    }
+
+    .item-image {
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    .item-card:hover .item-image {
+      transform: scale(1.04);
+    }
+  </style>
+</head>
+<body class="market-bg text-[#3a2f2a] selection:bg-[#b85d42] selection:text-white">
+  <!-- NAV -->
+  <nav class="sticky top-0 z-50 bg-[#f9f4eb]/95 backdrop-blur-xl border-b border-[#3a2f2a]/10">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <div class="flex items-center gap-x-3">
+        <div class="flex items-center gap-x-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-[#3a2f2a] flex items-center justify-center">
+            <i class="fa-solid fa-hammer text-[#f9f4eb] text-2xl"></i>
+          </div>
+          <div>
+            <div class="font-display text-3xl tracking-tighter">ForgeMarket</div>
+            <div class="text-[10px] text-[#5d6f5f] -mt-1 font-medium tracking-[1.5px]">MAKERS • DIRECT</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hidden md:flex items-center gap-x-9 text-sm font-medium">
+        <a href="#discover" onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})" class="nav-link hover:text-[#b85d42] transition-colors">Discover</a>
+        <a href="#services" onclick="filterByType('service'); document.getElementById('discover').scrollIntoView({behavior:'smooth'})" class="nav-link hover:text-[#b85d42] transition-colors">Book Services</a>
+        <a href="#makers" onclick="document.getElementById('makers').scrollIntoView({behavior:'smooth'})" class="nav-link hover:text-[#b85d42] transition-colors">Makers</a>
+        <button onclick="showSellModal()" class="nav-link hover:text-[#b85d42] transition-colors flex items-center gap-x-1.5">
+          <i class="fa-solid fa-store text-xs"></i>
+          <span>Sell on Forge</span>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-x-2.5">
+        <!-- Bookings -->
+        <button onclick="showBookingsModal()" 
+                class="flex items-center gap-x-2 px-4 h-11 rounded-2xl border border-[#3a2f2a]/15 hover:bg-white text-sm font-medium transition-all active:scale-[0.985]">
+          <i class="fa-regular fa-calendar text-[#b85d42]"></i>
+          <span class="hidden sm:inline">Bookings</span>
+          <span id="bookings-count" class="ml-0.5 text-xs font-mono bg-[#b85d42] text-white px-1.5 rounded-full min-w-[18px] h-[18px] flex items-center justify-center">0</span>
+        </button>
+
+        <!-- Cart -->
+        <button onclick="showCartModal()" 
+                class="flex items-center gap-x-2 px-5 h-11 rounded-2xl bg-[#3a2f2a] text-[#f9f4eb] hover:bg-black text-sm font-semibold transition-all active:scale-[0.985]">
+          <i class="fa-solid fa-shopping-bag"></i>
+          <span>Cart</span>
+          <span id="cart-count" class="font-mono text-xs bg-[#f9f4eb] text-[#3a2f2a] px-1.5 rounded-full min-w-[18px] h-[18px] flex items-center justify-center">0</span>
+        </button>
+
+        <div class="w-9 h-9 rounded-full bg-[#d4a373]/30 flex items-center justify-center cursor-pointer" onclick="showAccountModal()">
+          <i class="fa-solid fa-user text-[#3a2f2a]"></i>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="relative h-[620px] md:h-[680px] flex items-center overflow-hidden">
+    <img src="assets/marketplace-hero.png" alt="Artisan in studio with handmade pottery and textiles" 
+         class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#3a2f2a]/70 via-[#3a2f2a]/55 to-[#3a2f2a]/75"></div>
+    
+    <div class="relative max-w-5xl mx-auto px-6 text-center text-white">
+      <div class="inline-flex items-center gap-x-2 px-5 h-8 rounded-3xl bg-white/10 backdrop-blur border border-white/20 text-xs tracking-[2px] mb-6">
+        <div class="w-1.5 h-1.5 bg-[#d4a373] rounded-full animate-pulse"></div>
+        NOW OPEN • 3.5% FEES • NO LISTING COSTS
+      </div>
+      
+      <h1 class="font-display text-6xl md:text-7xl tracking-[-2.5px] leading-none mb-4">
+        Made by hand.<br>
+        Booked in real life.
+      </h1>
+      <p class="max-w-md mx-auto text-xl text-white/90 mb-9">
+        A marketplace for beautiful things and meaningful experiences.<br>
+        Makers keep more. You pay less in fees.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button onclick="document.getElementById('discover').scrollIntoView({behavior:'smooth'})" 
+                class="earthy-btn px-9 py-4 rounded-3xl font-semibold text-lg flex items-center gap-x-3 active:scale-[0.985]">
+          <span>Browse everything</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <button onclick="filterByType('service'); document.getElementById('discover').scrollIntoView({behavior:'smooth'})" 
+                class="px-8 py-4 rounded-3xl border-2 border-white/70 hover:bg-white/10 text-lg font-medium flex items-center gap-x-3 transition-all active:scale-[0.985]">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Find bookable services</span>
+        </button>
+      </div>
+      
+      <div class="flex items-center justify-center gap-x-8 mt-10 text-sm text-white/70">
+        <div class="flex items-center gap-x-2"><i class="fa-solid fa-check text-[#d4a373]"></i> <span>2,841 makers</span></div>
+        <div class="flex items-center gap-x-2"><i class="fa-solid fa-check text-[#d4a373]"></i> <span>19k orders this month</span></div>
+        <div class="flex items-center gap-x-2"><i class="fa-solid fa-check text-[#d4a373]"></i> <span>4.96 avg rating</span></div>
+      </div>
+    </div>
+    
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center text-white/60 text-xs tracking-widest">
+      <div>SCROLL TO EXPLORE</div>
+      <i class="fa-solid fa-chevron-down mt-1"></i>
+    </div>
+  </header>
+
+  <!-- TRUST / PRICING DIFFERENCE BAR -->
+  <div class="border-b border-[#3a2f2a]/10 bg-white">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm">
+      <div class="flex items-center gap-x-3">
+        <div class="text-[#5d6f5f] font-medium">Why makers choose ForgeMarket</div>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+        <div class="flex items-center gap-x-2">
+          <span class="font-semibold text-[#b85d42]">3.5%</span> 
+          <span class="text-[#5d6f5f]">platform fee</span>
+        </div>
+        <div class="text-[#5d6f5f]">•</div>
+        <div><span class="font-semibold">$0</span> <span class="text-[#5d6f5f]">listing fees</span></div>
+        <div class="text-[#5d6f5f]">•</div>
+        <div><span class="font-semibold">Instant</span> <span class="text-[#5d6f5f]">payouts for services</span></div>
+        <div class="px-4 py-1 bg-[#5d6f5f]/10 text-[#5d6f5f] rounded-full text-xs font-medium">vs Etsy 6.5% + listing fees</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISCOVER SECTION -->
+  <section id="discover" class="max-w-7xl mx-auto px-6 pt-12 pb-8 scroll-mt-8">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-y-4 mb-8">
+      <div>
+        <div class="uppercase tracking-[3px] text-xs font-semibold text-[#b85d42]">CURATED FOR YOU</div>
+        <h2 class="font-display text-5xl tracking-[-1.5px]">Discover makers near you</h2>
+      </div>
+      
+      <div class="flex items-center gap-x-3">
+        <!-- Type Filter -->
+        <div class="flex bg-white border border-[#3a2f2a]/15 rounded-2xl p-1 text-sm font-medium">
+          <button onclick="filterByType('all')" id="filter-all"
+                  class="px-5 py-2 rounded-[14px] category-pill active">All</button>
+          <button onclick="filterByType('product')" id="filter-product"
+                  class="px-5 py-2 rounded-[14px] category-pill hover:bg-[#f9f4eb]">Products</button>
+          <button onclick="filterByType('service')" id="filter-service"
+                  class="px-5 py-2 rounded-[14px] category-pill hover:bg-[#f9f4eb]">Services</button>
+        </div>
+        
+        <div class="relative w-72">
+          <input type="text" id="search-input" placeholder="Search pottery, workshops, jewelry..." 
+                 onkeyup="filterItems()"
+                 class="w-full bg-white border border-[#3a2f2a]/15 focus:border-[#b85d42]/40 transition px-5 py-3 rounded-2xl text-sm pl-11 outline-none">
+          <i class="fa-solid fa-search absolute left-4 top-4 text-[#5d6f5f]"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="flex flex-wrap gap-2 mb-8" id="category-filters">
+      <!-- Populated by JS -->
+    </div>
+
+    <!-- Items Grid -->
+    <div id="items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <!-- Populated dynamically by JS -->
+    </div>
+    
+    <div class="text-center mt-8">
+      <button onclick="loadMoreItems()" id="load-more-btn"
+              class="px-8 py-3 rounded-2xl border border-[#3a2f2a]/20 hover:bg-white text-sm font-medium transition hidden">
+        Load more makers
+      </button>
+    </div>
+  </section>
+
+  <!-- THE FORGEMARKET DIFFERENCE -->
+  <section class="max-w-7xl mx-auto px-6 py-14">
+    <div class="bg-white rounded-3xl border border-[#3a2f2a]/10 p-10 md:p-14">
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <div class="uppercase text-xs tracking-[2.5px] font-semibold text-[#b85d42]">BUILT DIFFERENT</div>
+          <h3 class="font-display text-5xl tracking-tighter leading-none mt-3">Makers keep<br>more. You save.</h3>
+          <p class="mt-5 text-lg text-[#5d6f5f]">Our 3.5% fee is half of most platforms. No surprise listing fees. No forced ads. No middleman taking a bigger cut every time.</p>
+          
+          <div class="mt-7 inline-flex items-center gap-x-2 text-sm">
+            <div class="px-4 py-1.5 bg-[#5d6f5f] text-white rounded-2xl font-semibold">3.5% flat</div>
+            <div class="text-[#5d6f5f]">vs 6.5% + fees elsewhere</div>
+          </div>
+        </div>
+        
+        <div class="space-y-4">
+          <div class="bg-[#f9f4eb] rounded-2xl p-6 flex gap-6">
+            <div class="flex-1">
+              <div class="text-xs uppercase tracking-wider text-[#5d6f5f]">Typical platform (Etsy)</div>
+              <div class="text-4xl font-semibold tabular-nums mt-1">$120 sale</div>
+              <div class="mt-4 text-sm space-y-1 text-[#5d6f5f]">
+                <div class="flex justify-between"><span>Platform fee (6.5%)</span><span class="font-medium text-red-600">-$7.80</span></div>
+                <div class="flex justify-between"><span>Listing + processing</span><span class="font-medium text-red-600">-$0.40</span></div>
+                <div class="pt-2 border-t flex justify-between font-semibold"><span>Maker keeps</span><span>$111.80</span></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-[#3a2f2a] text-[#f9f4eb] rounded-2xl p-6 flex gap-6">
+            <div class="flex-1">
+              <div class="text-xs uppercase tracking-wider text-[#d4a373]">ForgeMarket</div>
+              <div class="text-4xl font-semibold tabular-nums mt-1">$120 sale</div>
+              <div class="mt-4 text-sm space-y-1 text-[#d4a373]/90">
+                <div class="flex justify-between"><span>Platform fee (3.5%)</span><span class="font-medium text-emerald-400">-$4.20</span></div>
+                <div class="flex justify-between"><span>Everything else</span><span class="font-medium text-emerald-400">$0</span></div>
+                <div class="pt-2 border-t border-white/20 flex justify-between font-semibold"><span>Maker keeps</span><span class="text-white">$115.80</span></div>
+              </div>
+            </div>
+            <div class="self-end text-right">
+              <div class="text-emerald-400 text-xs font-semibold">+$4 SAVED</div>
+              <div class="text-4xl font-semibold text-emerald-400 tabular-nums">per sale</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED MAKERS -->
+  <section id="makers" class="max-w-7xl mx-auto px-6 py-8 scroll-mt-8">
+    <div class="flex items-end justify-between mb-7">
+      <div>
+        <div class="text-xs uppercase tracking-[2.5px] font-semibold text-[#b85d42]">THE PEOPLE BEHIND THE WORK</div>
+        <h3 class="font-display text-4xl tracking-tighter">Featured makers this month</h3>
+      </div>
+      <button onclick="showSellModal()" class="hidden md:flex items-center text-sm font-semibold text-[#b85d42] hover:underline">
+        Become a maker <i class="fa-solid fa-arrow-right ml-2"></i>
+      </button>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4" id="makers-grid">
+      <!-- Populated by JS -->
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="max-w-5xl mx-auto px-6 py-20 text-center">
+    <div class="max-w-lg mx-auto">
+      <div class="font-display text-5xl tracking-[-1.5px]">Ready to support real makers?</div>
+      <p class="mt-4 text-lg text-[#5d6f5f]">Every purchase and booking goes straight to the person who made it.</p>
+      
+      <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+        <button onclick="filterByType('all'); document.getElementById('discover').scrollIntoView({behavior:'smooth'})" 
+                class="earthy-btn px-10 py-4 text-lg rounded-3xl font-semibold">Start exploring</button>
+        <button onclick="showSellModal()" 
+                class="px-9 py-4 rounded-3xl border-2 border-[#3a2f2a]/70 hover:bg-[#3a2f2a] hover:text-white text-lg font-semibold transition">Open your shop</button>
+      </div>
+      <div class="mt-4 text-xs text-[#5d6f5f]">Takes 90 seconds. No credit card required to list.</div>
+    </div>
+  </section>
+
+  <footer class="border-t border-[#3a2f2a]/10 py-8 bg-white/70">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-y-3 text-sm text-[#5d6f5f]">
+      <div>© 2026 ForgeMarket — A fairer marketplace for makers and the people who love their work.</div>
+      <div class="flex gap-x-5">
+        <a href="#" class="hover:text-[#b85d42]">How it works</a>
+        <a href="#" class="hover:text-[#b85d42]">Fees</a>
+        <a href="#" class="hover:text-[#b85d42]">For makers</a>
+        <a href="#" onclick="window.location.reload()" class="hover:text-[#b85d42] cursor-pointer">Reload preview</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BOOKING MODAL -->
+  <div id="booking-modal" onclick="if (event.target.id === 'booking-modal') hideBookingModal()" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+    <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl border border-[#3a2f2a]/10">
+      <div class="px-6 pt-6 pb-4 flex items-start justify-between border-b">
+        <div>
+          <div id="booking-item-type" class="uppercase text-xs tracking-widest text-[#b85d42] font-semibold"></div>
+          <div id="booking-item-title" class="font-display text-3xl tracking-tight"></div>
+          <div id="booking-item-maker" class="text-[#5d6f5f] mt-0.5"></div>
+        </div>
+        <button onclick="hideBookingModal()" class="text-3xl leading-none text-[#5d6f5f] hover:text-black mt-1">×</button>
+      </div>
+      
+      <div class="p-6 space-y-6">
+        <!-- Date picker -->
+        <div>
+          <div class="text-xs uppercase tracking-wider font-semibold text-[#5d6f5f] mb-2">CHOOSE DATE</div>
+          <input type="date" id="booking-date" class="w-full border border-[#3a2f2a]/20 rounded-2xl px-4 py-3 text-lg focus:outline-none focus:border-[#b85d42]" 
+                 onchange="updateAvailableSlots()">
+        </div>
+        
+        <!-- Time slots -->
+        <div>
+          <div class="text-xs uppercase tracking-wider font-semibold text-[#5d6f5f] mb-2">AVAILABLE TIMES</div>
+          <div id="time-slots" class="grid grid-cols-3 sm:grid-cols-4 gap-2"></div>
+        </div>
+        
+        <div>
+          <div class="text-xs uppercase tracking-wider font-semibold text-[#5d6f5f] mb-1.5">PARTICIPANTS / NOTES</div>
+          <input id="booking-notes" type="text" placeholder="For 2 people, beginner friendly..." 
+                 class="w-full border border-[#3a2f2a]/20 rounded-2xl px-4 py-3 text-sm">
+        </div>
+        
+        <div class="pt-2 border-t flex items-center justify-between">
+          <div>
+            <div class="text-xs text-[#5d6f5f]">Total for this booking</div>
+            <div id="booking-price" class="text-3xl font-semibold tabular-nums"></div>
+          </div>
+          <button onclick="confirmBooking()" 
+                  class="sage-btn px-9 py-4 rounded-2xl font-semibold text-sm active:scale-[0.985]">CONFIRM BOOKING</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART MODAL -->
+  <div id="cart-modal" onclick="if (event.target.id === 'cart-modal') hideCartModal()" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-end md:items-center justify-center">
+    <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full md:max-w-md md:mx-auto md:rounded-3xl md:m-4 rounded-t-3xl overflow-hidden shadow-2xl border border-[#3a2f2a]/10 max-h-[92vh] flex flex-col">
+      <div class="px-6 py-5 border-b flex justify-between items-center">
+        <div class="font-semibold text-xl">Your cart</div>
+        <button onclick="hideCartModal()" class="text-3xl leading-none text-[#5d6f5f]">×</button>
+      </div>
+      
+      <div id="cart-items" class="flex-1 overflow-auto p-6 space-y-4 text-sm"></div>
+      
+      <div class="border-t p-6 bg-[#f9f4eb]">
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between"><span class="text-[#5d6f5f]">Subtotal</span><span id="cart-subtotal" class="font-semibold tabular-nums"></span></div>
+          <div class="flex justify-between text-emerald-600"><span>Saved vs Etsy pricing</span><span id="cart-savings" class="font-semibold tabular-nums"></span></div>
+          <div class="pt-2 border-t flex justify-between text-lg font-semibold"><span>Total due today</span><span id="cart-total" class="tabular-nums"></span></div>
+        </div>
+        
+        <button onclick="checkout()" 
+                class="mt-5 w-full earthy-btn py-4 rounded-2xl font-semibold text-base">Checkout securely</button>
+        <div class="text-center text-[10px] text-[#5d6f5f] mt-2">3.5% platform fee already included • Ships or local pickup</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELL / LISTING MODAL -->
+  <div id="sell-modal" onclick="if (event.target.id === 'sell-modal') hideSellModal()" class="hidden fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
+    <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg rounded-3xl overflow-hidden border border-[#3a2f2a]/10">
+      <div class="p-6 border-b">
+        <div class="font-display text-3xl tracking-tight">Open your shop</div>
+        <div class="text-[#5d6f5f]">List a product or bookable service in under a minute. 3.5% fee when it sells.</div>
+      </div>
+      
+      <div class="p-6 space-y-4">
+        <div>
+          <div class="text-xs font-semibold tracking-wider text-[#5d6f5f] mb-1">WHAT ARE YOU LISTING?</div>
+          <div class="flex gap-2">
+            <button onclick="setListingType('product')" id="sell-type-product" 
+                    class="flex-1 py-3 border border-[#b85d42] bg-[#b85d42] text-white rounded-2xl text-sm font-semibold">Product for sale</button>
+            <button onclick="setListingType('service')" id="sell-type-service" 
+                    class="flex-1 py-3 border border-[#3a2f2a]/20 hover:bg-[#f9f4eb] rounded-2xl text-sm font-semibold">Bookable service</button>
+          </div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2">
+            <input id="sell-title" type="text" placeholder="Title (e.g. Hand-thrown Ramen Bowls, set of 2)" 
+                   class="w-full border border-[#3a2f2a]/20 px-5 py-3 rounded-2xl text-sm">
+          </div>
+          <div>
+            <input id="sell-price" type="number" placeholder="Price" class="w-full border border-[#3a2f2a]/20 px-5 py-3 rounded-2xl text-sm">
+          </div>
+          <div>
+            <input id="sell-location" type="text" value="Portland, OR" class="w-full border border-[#3a2f2a]/20 px-5 py-3 rounded-2xl text-sm">
+          </div>
+        </div>
+        
+        <div>
+          <textarea id="sell-description" rows="2" placeholder="Short description..." 
+                    class="w-full border border-[#3a2f2a]/20 px-5 py-3 rounded-2xl text-sm"></textarea>
+        </div>
+        
+        <div class="text-xs text-[#5d6f5f]">Your listing will appear instantly in the preview for demo purposes.</div>
+      </div>
+      
+      <div class="p-6 border-t bg-[#f9f4eb] flex gap-3">
+        <button onclick="hideSellModal()" class="flex-1 py-3.5 text-sm font-medium border border-[#3a2f2a]/20 rounded-2xl">Cancel</button>
+        <button onclick="createListing()" class="flex-1 earthy-btn py-3.5 text-sm font-semibold rounded-2xl">Publish listing</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tailwind script
+    function initTailwind() {
+      document.documentElement.style.setProperty('--accent', '#b85d42');
+    }
+
+    // Sample data - products and services (using beautiful custom images)
+    let items = [
+      {
+        id: 1, type: 'product', title: "Hand-thrown Ceramic Mug Set", price: 68, 
+        maker: "Lumen Ceramics", location: "Asheville, NC", rating: 4.9, reviews: 147,
+        category: "Pottery & Ceramics", 
+        desc: "Set of 4 wheel-thrown stoneware mugs. Microwave and dishwasher safe. Each one is slightly different — just like your morning coffee ritual.",
+        image: "assets/images/3.jpg",
+        inStock: 12
+      },
+      {
+        id: 2, type: 'service', title: "Pottery Wheel Workshop", price: 95, duration: "2.5 hours",
+        maker: "River & Clay Studio", location: "Portland, OR", rating: 5.0, reviews: 89,
+        category: "Workshops & Classes",
+        desc: "Learn to throw on the wheel in a small group. All materials + firing included. Take home your own piece.",
+        image: "assets/images/5.jpg",
+        slots: "12 left this month"
+      },
+      {
+        id: 3, type: 'product', title: "Woven Merino Wool Throw", price: 145, 
+        maker: "Wild Loom Textiles", location: "Boulder, CO", rating: 4.8, reviews: 64,
+        category: "Textiles & Fiber",
+        desc: "Handwoven on a 4-harness loom using locally sourced merino. 52\" x 68\". The softest blanket you'll ever own.",
+        image: "assets/images/1.jpg",
+        inStock: 7
+      },
+      {
+        id: 4, type: 'service', title: "Custom Furniture Commission", price: 1250, duration: "Consult + build",
+        maker: "Black Walnut Studio", location: "Seattle, WA", rating: 4.9, reviews: 31,
+        category: "Custom Commissions",
+        desc: "One-of-a-kind live edge tables, benches, and desks. Starts with a 45-min design consult at your home or studio.",
+        image: "assets/images/2.jpg",
+        slots: "2 slots in July"
+      },
+      {
+        id: 5, type: 'product', title: "Forged Brass Hoop Earrings", price: 42, 
+        maker: "Anvil & Ash", location: "Santa Fe, NM", rating: 4.7, reviews: 203,
+        category: "Jewelry & Metal",
+        desc: "Hammered and formed by hand from solid brass. Lightweight. Comes in a beautiful reclaimed wood box.",
+        image: "assets/images/4.jpg",
+        inStock: 34
+      },
+      {
+        id: 6, type: 'service', title: "Natural Dye + Block Print Workshop", price: 78, duration: "3 hours",
+        maker: "Root & Branch", location: "Austin, TX", rating: 4.9, reviews: 57,
+        category: "Workshops & Classes",
+        desc: "Learn to dye fabric with plants then block print your own scarf or tea towels. All supplies included.",
+        image: "assets/images/6.jpg",
+        slots: "8 seats remaining"
+      },
+      {
+        id: 7, type: 'product', title: "Live Edge Black Walnut Board", price: 89, 
+        maker: "Timber & Grain", location: "Eureka, CA", rating: 4.9, reviews: 118,
+        category: "Wood & Furniture",
+        desc: "Sustainably harvested single slab cutting board. 16\" x 22\". Finished with food-safe oil and wax.",
+        image: "assets/images/2.jpg",
+        inStock: 9
+      },
+      {
+        id: 8, type: 'service', title: "Home Textile Styling Session", price: 165, duration: "90 min",
+        maker: "Linen & Light", location: "Charleston, SC", rating: 5.0, reviews: 22,
+        category: "Home & Garden Services",
+        desc: "I come to your home and help you style your textiles — curtains, pillows, throws, table linens. Includes shopping list.",
+        image: "assets/images/1.jpg",
+        slots: "Available next week"
+      },
+      {
+        id: 9, type: 'product', title: "Stoneware Dinner Plate Set (4)", price: 115, 
+        maker: "Lumen Ceramics", location: "Asheville, NC", rating: 4.8, reviews: 92,
+        category: "Pottery & Ceramics",
+        desc: "Generous 11\" plates in a warm speckled clay. Perfect everyday plates that feel special.",
+        image: "assets/images/7.jpg",
+        inStock: 15
+      },
+      {
+        id: 10, type: 'service', title: "Jewelry Repair & Resizing", price: 55, duration: "Drop-off + 5 days",
+        maker: "Anvil & Ash", location: "Santa Fe, NM", rating: 4.9, reviews: 76,
+        category: "Custom Commissions",
+        desc: "Expert repair and resizing for your favorite pieces. Gold, silver, brass. Includes cleaning and polishing.",
+        image: "assets/images/8.jpg",
+        slots: "Walk-ins welcome"
+      },
+      {
+        id: 11, type: 'product', title: "Hand-bound Leather Journal", price: 58, 
+        maker: "Paper & Thread", location: "Missoula, MT", rating: 4.6, reviews: 154,
+        category: "Textiles & Fiber",
+        desc: "Full grain leather cover, 192 pages of premium cotton paper. Stitched by hand. Ages beautifully.",
+        image: "assets/images/4.jpg",
+        inStock: 21
+      },
+      {
+        id: 12, type: 'service', title: "Beginner Wood Carving Class", price: 68, duration: "2 hours",
+        maker: "Timber & Grain", location: "Eureka, CA", rating: 4.8, reviews: 41,
+        category: "Workshops & Classes",
+        desc: "Carve your own small spoon or butter knife. Tools and wood provided. No experience needed.",
+        image: "assets/images/2.jpg",
+        slots: "6 seats left"
+      }
+    ]
+
+    let makers = [
+      { id: 1, name: "Lumen Ceramics", location: "Asheville, NC", specialty: "Wheel-thrown stoneware", rating: 4.9, sales: 1240, image: "assets/images/3.jpg" },
+      { id: 2, name: "Wild Loom Textiles", location: "Boulder, CO", specialty: "Handwoven wool", rating: 4.8, sales: 684, image: "assets/images/1.jpg" },
+      { id: 3, name: "Black Walnut Studio", location: "Seattle, WA", specialty: "Live-edge furniture", rating: 4.9, sales: 312, image: "assets/images/2.jpg" },
+      { id: 4, name: "Anvil & Ash", location: "Santa Fe, NM", specialty: "Forged jewelry", rating: 4.7, sales: 1890, image: "assets/images/8.jpg" },
+      { id: 5, name: "Root & Branch", location: "Austin, TX", specialty: "Natural dyes & print", rating: 4.9, sales: 519, image: "assets/images/6.jpg" }
+    ]
+
+    let cart = []
+    let bookings = []
+    let userListings = []
+    let currentFilter = 'all'
+    let currentCategory = null
+    let currentListingType = 'product'
+    let selectedBookingItem = null
+    let selectedTimeSlot = null
+
+    // Categories
+    const categories = ["Pottery & Ceramics", "Textiles & Fiber", "Wood & Furniture", "Jewelry & Metal", "Workshops & Classes", "Custom Commissions", "Home & Garden Services"]
+
+    function renderCategories() {
+      const container = document.getElementById('category-filters')
+      container.innerHTML = `
+        <button onclick="filterByCategory(null)" class="category-pill px-4 py-1.5 text-xs font-medium rounded-full border border-[#3a2f2a]/15 bg-white hover:bg-[#f9f4eb] active">All categories</button>
+      `
+      categories.forEach(cat => {
+        const btn = document.createElement('button')
+        btn.className = `category-pill px-4 py-1.5 text-xs font-medium rounded-full border border-[#3a2f2a]/15 bg-white hover:bg-[#f9f4eb]`
+        btn.textContent = cat
+        btn.onclick = () => filterByCategory(cat)
+        container.appendChild(btn)
+      })
+    }
+
+    function filterByCategory(cat) {
+      currentCategory = cat
+      document.querySelectorAll('#category-filters button').forEach(b => {
+        if (cat === null && b.textContent === 'All categories') b.classList.add('active')
+        else if (b.textContent === cat) b.classList.add('active')
+        else b.classList.remove('active')
+      })
+      renderItems()
+    }
+
+    function filterByType(type) {
+      currentFilter = type
+      document.getElementById('filter-all').classList.toggle('active', type === 'all')
+      document.getElementById('filter-product').classList.toggle('active', type === 'product')
+      document.getElementById('filter-service').classList.toggle('active', type === 'service')
+      renderItems()
+    }
+
+    function filterItems() {
+      renderItems()
+    }
+
+    function getFilteredItems() {
+      const search = (document.getElementById('search-input')?.value || '').toLowerCase().trim()
+      
+      return items.filter(item => {
+        const matchesType = currentFilter === 'all' || item.type === currentFilter
+        const matchesCat = !currentCategory || item.category === currentCategory
+        const matchesSearch = !search || 
+          item.title.toLowerCase().includes(search) || 
+          item.maker.toLowerCase().includes(search) ||
+          item.category.toLowerCase().includes(search) ||
+          (item.desc && item.desc.toLowerCase().includes(search))
+        
+        return matchesType && matchesCat && matchesSearch
+      })
+    }
+
+    function renderItems() {
+      const grid = document.getElementById('items-grid')
+      const filtered = getFilteredItems()
+      
+      grid.innerHTML = ''
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-[#5d6f5f]">No matches. Try a broader search or different category.</div>`
+        return
+      }
+      
+      filtered.forEach(item => {
+        const card = document.createElement('div')
+        card.className = `item-card bg-white border border-[#3a2f2a]/10 rounded-3xl overflow-hidden flex flex-col group`
+        
+        const isProduct = item.type === 'product'
+        
+        card.innerHTML = `
+          <div class="relative">
+            <img src="${item.image}" class="item-image w-full aspect-square object-cover" alt="${item.title}">
+            <div class="absolute top-3 right-3">
+              <div class="px-3 py-1 text-xs font-semibold rounded-full ${isProduct ? 'bg-white/95 text-[#3a2f2a]' : 'bg-[#b85d42] text-white'} flex items-center gap-x-1 shadow">
+                <i class="fa-solid ${isProduct ? 'fa-box' : 'fa-calendar-check'} text-xs"></i>
+                <span class="font-medium">${isProduct ? 'Product' : 'Bookable'}</span>
+              </div>
+            </div>
+            ${isProduct && item.inStock ? `<div class="absolute bottom-3 left-3 bg-white/90 text-xs px-2.5 py-0.5 rounded font-medium">${item.inStock} left</div>` : ''}
+          </div>
+          
+          <div class="p-4 flex flex-col flex-1">
+            <div class="flex justify-between items-start gap-3">
+              <div class="min-w-0">
+                <div class="font-semibold leading-tight tracking-tight pr-1">${item.title}</div>
+                <div class="text-xs text-[#5d6f5f] mt-0.5">${item.maker} • ${item.location}</div>
+              </div>
+              <div class="text-right shrink-0">
+                <div class="font-semibold tabular-nums">$${item.price}</div>
+                ${!isProduct && item.duration ? `<div class="text-[10px] text-[#5d6f5f]">${item.duration}</div>` : ''}
+              </div>
+            </div>
+            
+            <div class="mt-auto pt-4 flex items-center justify-between">
+              <div class="flex items-center gap-x-1 text-xs">
+                <span class="text-amber-500">★</span>
+                <span class="font-medium">${item.rating}</span>
+                <span class="text-[#5d6f5f]">(${item.reviews})</span>
+              </div>
+              
+              <div>
+                ${isProduct 
+                  ? `<button onclick="addToCart(${item.id}, event)" class="text-xs font-semibold px-5 py-2 bg-[#3a2f2a] hover:bg-black text-white rounded-full active:scale-95 transition">Add to cart</button>`
+                  : `<button onclick="openBooking(${item.id}, event)" class="text-xs font-semibold px-5 py-2 earthy-btn rounded-full active:scale-95 transition">Book now</button>`
+                }
+              </div>
+            </div>
+          </div>
+        `
+        
+        card.onclick = (e) => {
+          if (!e.target.closest('button')) showItemDetail(item)
+        }
+        
+        grid.appendChild(card)
+      })
+    }
+
+    function renderMakers() {
+      const grid = document.getElementById('makers-grid')
+      grid.innerHTML = ''
+      
+      makers.forEach(maker => {
+        const el = document.createElement('div')
+        el.className = `maker-card bg-white border border-[#3a2f2a]/10 rounded-3xl p-4 cursor-pointer hover:border-[#b85d42]/30`
+        el.innerHTML = `
+          <div class="flex gap-4">
+            <img src="${maker.image}" class="w-14 h-14 rounded-2xl object-cover ring-1 ring-[#3a2f2a]/10" alt="${maker.name}">
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold tracking-tight">${maker.name}</div>
+              <div class="text-xs text-[#5d6f5f]">${maker.location}</div>
+              <div class="text-xs mt-1 text-[#b85d42]">${maker.specialty}</div>
+              
+              <div class="flex items-center justify-between text-xs mt-2.5">
+                <div class="flex items-center gap-x-1">
+                  <span class="text-amber-500">★</span>
+                  <span class="font-medium">${maker.rating}</span>
+                </div>
+                <div class="text-[#5d6f5f]">${maker.sales} sales</div>
+              </div>
+            </div>
+          </div>
+        `
+        el.onclick = () => {
+          currentCategory = null
+          document.getElementById('search-input').value = maker.name.split(' ')[0]
+          filterItems()
+          document.getElementById('discover').scrollIntoView({ behavior: 'smooth' })
+        }
+        grid.appendChild(el)
+      })
+    }
+
+    function addToCart(itemId, e) {
+      e.stopImmediatePropagation()
+      const item = items.find(i => i.id === itemId)
+      if (!item) return
+      
+      cart.push({ ...item, cartId: Date.now() })
+      updateCartCount()
+      
+      const btns = document.querySelectorAll(`button[onclick*="addToCart(${itemId}"]`)
+      btns.forEach(b => {
+        const original = b.textContent
+        b.textContent = 'Added ✓'
+        b.classList.add('!bg-emerald-600')
+        setTimeout(() => {
+          b.textContent = original
+          b.classList.remove('!bg-emerald-600')
+        }, 1200)
+      })
+      
+      showToast(`${item.title} added to cart`)
+    }
+
+    function updateCartCount() {
+      document.getElementById('cart-count').textContent = cart.length
+    }
+
+    function updateBookingsCount() {
+      document.getElementById('bookings-count').textContent = bookings.length
+    }
+
+    function showItemDetail(item) {
+      const modal = document.createElement('div')
+      modal.className = `fixed inset-0 bg-black/70 z-[110] flex items-center justify-center p-4`
+      
+      const isProduct = item.type === 'product'
+      
+      modal.innerHTML = `
+        <div onclick="event.target.remove()" class="absolute inset-0"></div>
+        <div class="relative bg-white w-full max-w-3xl rounded-3xl overflow-hidden modal shadow-2xl" onclick="event.stopImmediatePropagation()">
+          <div class="grid md:grid-cols-5">
+            <div class="md:col-span-3">
+              <img src="${item.image}" class="w-full h-full object-cover aspect-square md:aspect-auto" alt="">
+            </div>
+            
+            <div class="md:col-span-2 p-8 flex flex-col">
+              <button onclick="this.closest('.fixed').remove()" class="absolute top-6 right-6 text-3xl text-[#5d6f5f] hover:text-black">×</button>
+              
+              <div>
+                <div class="uppercase tracking-[2px] text-xs text-[#b85d42] font-semibold">${item.category}</div>
+                <div class="font-display text-4xl tracking-tighter mt-1 leading-none">${item.title}</div>
+                <div class="mt-2 text-[#5d6f5f]">${item.maker} • ${item.location}</div>
+              </div>
+              
+              <div class="flex items-baseline gap-x-2 mt-6">
+                <div class="text-5xl font-semibold tabular-nums">$${item.price}</div>
+                ${!isProduct && item.duration ? `<div class="text-[#5d6f5f]">${item.duration}</div>` : ''}
+              </div>
+              
+              <div class="flex items-center gap-x-2 mt-2 text-sm">
+                <span class="text-amber-500 text-lg">★</span>
+                <span class="font-semibold">${item.rating}</span>
+                <span class="text-[#5d6f5f]">from ${item.reviews} reviews</span>
+              </div>
+              
+              <div class="mt-6 text-[#5d6f5f] leading-relaxed text-[15px]">
+                ${item.desc}
+              </div>
+              
+              <div class="mt-auto pt-8">
+                ${isProduct 
+                  ? `<div class="flex gap-3">
+                      <button onclick="addToCart(${item.id}, event); this.closest('.fixed').remove()" class="flex-1 earthy-btn py-4 rounded-2xl font-semibold">Add to cart</button>
+                      <button onclick="this.closest('.fixed').remove()" class="flex-1 py-4 border border-[#3a2f2a]/30 rounded-2xl font-semibold">Save for later</button>
+                    </div>`
+                  : `<button onclick="this.closest('.fixed').remove(); openBooking(${item.id}, event)" class="w-full earthy-btn py-4 rounded-2xl font-semibold">Check availability &amp; book</button>`
+                }
+                
+                <div class="text-center text-xs text-[#5d6f5f] mt-4">Message the maker after purchase — included</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+      document.body.appendChild(modal)
+    }
+
+    function openBooking(itemId, e) {
+      if (e) e.stopImmediatePropagation()
+      selectedBookingItem = items.find(i => i.id === itemId)
+      if (!selectedBookingItem) return
+      
+      const modal = document.getElementById('booking-modal')
+      modal.classList.remove('hidden')
+      modal.classList.add('flex')
+      
+      document.getElementById('booking-item-title').textContent = selectedBookingItem.title
+      document.getElementById('booking-item-maker').innerHTML = `${selectedBookingItem.maker} <span class="text-[#5d6f5f]">• ${selectedBookingItem.location}</span>`
+      document.getElementById('booking-item-type').textContent = selectedBookingItem.type.toUpperCase()
+      document.getElementById('booking-price').textContent = `$${selectedBookingItem.price}`
+      
+      const tomorrow = new Date()
+      tomorrow.setDate(tomorrow.getDate() + 1)
+      const dateInput = document.getElementById('booking-date')
+      dateInput.value = tomorrow.toISOString().split('T')[0]
+      
+      selectedTimeSlot = null
+      updateAvailableSlots()
+    }
+
+    function updateAvailableSlots() {
+      const container = document.getElementById('time-slots')
+      container.innerHTML = ''
+      
+      const times = ['09:00', '10:30', '13:00', '14:45', '16:30', '18:00']
+      
+      times.forEach(time => {
+        const slot = document.createElement('button')
+        slot.className = `booking-slot border border-[#3a2f2a]/20 rounded-2xl py-3 text-sm font-medium hover:border-[#b85d42]`
+        slot.textContent = time
+        slot.onclick = () => {
+          container.querySelectorAll('button').forEach(s => s.classList.remove('selected'))
+          slot.classList.add('selected')
+          selectedTimeSlot = time
+        }
+        container.appendChild(slot)
+      })
+    }
+
+    function hideBookingModal() {
+      const modal = document.getElementById('booking-modal')
+      modal.classList.add('hidden')
+      modal.classList.remove('flex')
+      selectedBookingItem = null
+      selectedTimeSlot = null
+    }
+
+    function confirmBooking() {
+      if (!selectedBookingItem || !selectedTimeSlot) {
+        alert("Please pick a time slot")
+        return
+      }
+      
+      const date = document.getElementById('booking-date').value
+      const notes = document.getElementById('booking-notes').value || 'No notes'
+      
+      const booking = {
+        id: Date.now(),
+        itemId: selectedBookingItem.id,
+        title: selectedBookingItem.title,
+        maker: selectedBookingItem.maker,
+        date,
+        time: selectedTimeSlot,
+        price: selectedBookingItem.price,
+        notes,
+        status: 'confirmed'
+      }
+      
+      bookings.push(booking)
+      updateBookingsCount()
+      
+      hideBookingModal()
+      showBookingSuccess(booking)
+    }
+
+    function showBookingSuccess(booking) {
+      const div = document.createElement('div')
+      div.className = `fixed bottom-8 left-1/2 -translate-x-1/2 z-[120] bg-white shadow-2xl border border-[#3a2f2a]/10 rounded-3xl px-8 py-6 max-w-sm`
+      div.innerHTML = `
+        <div class="flex gap-4">
+          <div class="mt-1">
+            <i class="fa-solid fa-check-circle text-[#5d6f5f] text-4xl"></i>
+          </div>
+          <div>
+            <div class="font-semibold">Booking confirmed!</div>
+            <div class="text-sm text-[#5d6f5f] mt-0.5">${booking.title}</div>
+            <div class="mt-3 text-xs bg-[#f9f4eb] px-3 py-2 rounded-2xl inline-block">
+              ${new Date(booking.date).toLocaleDateString(undefined, {month:'short', day:'numeric'})} at ${booking.time}
+            </div>
+            <div class="text-xs text-[#5d6f5f] mt-2">Maker will reach out within 2 hours with exact address &amp; details.</div>
+            
+            <button onclick="this.closest('.fixed').remove(); showBookingsModal()" 
+                    class="mt-4 block text-xs font-semibold underline text-[#b85d42]">View all my bookings →</button>
+          </div>
+        </div>
+      `
+      document.body.appendChild(div)
+      
+      setTimeout(() => {
+        if (div.parentNode) div.parentNode.removeChild(div)
+      }, 12000)
+    }
+
+    function showBookingsModal() {
+      const modal = document.createElement('div')
+      modal.className = `fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4`
+      
+      let html = `
+        <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden modal" onclick="event.stopImmediatePropagation()">
+          <div class="px-6 py-5 border-b flex justify-between">
+            <div class="font-semibold text-xl">My Bookings</div>
+            <button onclick="this.closest('.fixed').remove()" class="text-3xl text-[#5d6f5f]">×</button>
+          </div>
+          <div class="p-6 max-h-[65vh] overflow-auto">
+      `
+      
+      if (bookings.length === 0) {
+        html += `<div class="text-center py-12 text-[#5d6f5f]">You don't have any bookings yet.<br>Find a workshop or service and book it.</div>`
+      } else {
+        bookings.forEach(b => {
+          html += `
+            <div class="border border-[#3a2f2a]/10 rounded-2xl p-5 mb-3 last:mb-0">
+              <div class="flex justify-between">
+                <div>
+                  <div class="font-semibold">${b.title}</div>
+                  <div class="text-xs text-[#5d6f5f]">${b.maker}</div>
+                </div>
+                <div class="text-right">
+                  <div class="font-semibold tabular-nums">$${b.price}</div>
+                  <div class="text-emerald-600 text-xs">Confirmed</div>
+                </div>
+              </div>
+              <div class="mt-4 text-sm bg-[#f9f4eb] px-4 py-3 rounded-xl flex justify-between text-xs">
+                <div><span class="font-medium">${new Date(b.date).toLocaleDateString()}</span> at ${b.time}</div>
+                <button onclick="cancelBooking(${b.id}, this)" class="font-semibold text-[#b85d42]">Cancel</button>
+              </div>
+              ${b.notes !== 'No notes' ? `<div class="text-xs mt-3 text-[#5d6f5f]">${b.notes}</div>` : ''}
+            </div>
+          `
+        })
+      }
+      
+      html += `</div></div>`
+      modal.innerHTML = html
+      document.body.appendChild(modal)
+    }
+
+    function cancelBooking(bookingId, el) {
+      if (!confirm('Cancel this booking?')) return
+      bookings = bookings.filter(b => b.id !== bookingId)
+      updateBookingsCount()
+      el.closest('.fixed').remove()
+      showBookingsModal()
+    }
+
+    function showCartModal() {
+      const modal = document.getElementById('cart-modal')
+      modal.classList.remove('hidden')
+      modal.classList.add('flex')
+      renderCart()
+    }
+
+    function hideCartModal() {
+      const modal = document.getElementById('cart-modal')
+      modal.classList.add('hidden')
+      modal.classList.remove('flex')
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items')
+      if (cart.length === 0) {
+        container.innerHTML = `<div class="text-center py-10 text-[#5d6f5f]">Your cart is empty.<br>Start adding beautiful things.</div>`
+        document.getElementById('cart-subtotal').textContent = '$0'
+        document.getElementById('cart-savings').textContent = '$0'
+        document.getElementById('cart-total').textContent = '$0'
+        return
+      }
+      
+      let html = ''
+      let subtotal = 0
+      let etsyEquivalent = 0
+      
+      cart.forEach((item, idx) => {
+        subtotal += item.price
+        etsyEquivalent += Math.round(item.price * 1.08) 
+        
+        html += `
+          <div class="flex gap-4 border-b border-[#3a2f2a]/10 pb-4 last:border-0 last:pb-0">
+            <img src="${item.image}" class="w-20 h-20 rounded-2xl object-cover flex-shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="font-medium leading-tight">${item.title}</div>
+              <div class="text-xs text-[#5d6f5f]">${item.maker}</div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="font-semibold tabular-nums">$${item.price}</div>
+                <button onclick="removeFromCart(${idx})" class="text-xs text-[#b85d42] hover:underline">Remove</button>
+              </div>
+            </div>
+          </div>
+        `
+      })
+      
+      const savings = etsyEquivalent - subtotal
+      const total = subtotal
+      
+      container.innerHTML = html
+      document.getElementById('cart-subtotal').textContent = `$${subtotal}`
+      document.getElementById('cart-savings').innerHTML = `$${savings} <span class="text-xs font-normal">(~8% more expensive on other platforms)</span>`
+      document.getElementById('cart-total').textContent = `$${total}`
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1)
+      updateCartCount()
+      renderCart()
+    }
+
+    function checkout() {
+      if (cart.length === 0) return
+      
+      const modal = document.getElementById('cart-modal')
+      const total = cart.reduce((sum, i) => sum + i.price, 0)
+      
+      modal.innerHTML = `
+        <div class="bg-white w-full md:max-w-md md:mx-auto md:rounded-3xl md:m-4 rounded-t-3xl p-8 modal">
+          <div class="font-semibold text-2xl tracking-tight">Checkout</div>
+          <div class="text-[#5d6f5f] mt-1">You're supporting ${new Set(cart.map(i => i.maker)).size} different makers.</div>
+          
+          <div class="my-8 space-y-4 text-sm">
+            <div class="flex justify-between"><span>Subtotal</span><span class="font-semibold tabular-nums">$${total}</span></div>
+            <div class="flex justify-between text-emerald-600"><span>Platform fee (3.5%)</span><span class="font-medium">Included</span></div>
+            <div class="pt-3 border-t flex justify-between text-xl font-semibold"><span>Total</span><span class="tabular-nums">$${total}</span></div>
+          </div>
+          
+          <div class="space-y-3">
+            <input placeholder="Card number  •  4242 4242 4242 4242" class="w-full border px-4 py-3 rounded-2xl text-sm" value="4242 4242 4242 4242">
+            <div class="grid grid-cols-2 gap-3">
+              <input placeholder="MM / YY" class="border px-4 py-3 rounded-2xl text-sm" value="06 / 28">
+              <input placeholder="CVC" class="border px-4 py-3 rounded-2xl text-sm" value="123">
+            </div>
+          </div>
+          
+          <button onclick="completeCheckout(${total})" 
+                  class="mt-6 w-full earthy-btn py-4 rounded-2xl font-semibold text-lg">Pay $${total}</button>
+          
+          <div class="text-center mt-4">
+            <button onclick="document.getElementById('cart-modal').classList.add('hidden'); document.getElementById('cart-modal').classList.remove('flex')" class="text-xs text-[#5d6f5f]">Cancel</button>
+          </div>
+        </div>
+      `
+    }
+
+    function completeCheckout(total) {
+      const modal = document.getElementById('cart-modal')
+      const purchasedItems = [...cart]
+      
+      cart = []
+      updateCartCount()
+      
+      modal.innerHTML = `
+        <div class="bg-white w-full max-w-md mx-auto md:rounded-3xl md:m-4 rounded-t-3xl p-9 text-center modal">
+          <i class="fa-solid fa-check-circle text-7xl text-[#5d6f5f]"></i>
+          <div class="mt-5 font-display text-4xl tracking-tighter">Thank you.</div>
+          <div class="text-[#5d6f5f] mt-2">Your order has been placed. The makers have been notified.</div>
+          
+          <div class="bg-[#f9f4eb] mt-8 p-6 rounded-2xl text-left text-sm">
+            <div class="font-semibold mb-3">Order #FM-${Date.now().toString().slice(-6)}</div>
+            <div class="text-[#5d6f5f]">You just supported ${purchasedItems.length} makers directly.<br>They receive 96.5% of what you paid.</div>
+          </div>
+          
+          <button onclick="document.getElementById('cart-modal').classList.add('hidden'); document.getElementById('cart-modal').classList.remove('flex'); window.location.reload()" 
+                  class="mt-8 w-full border border-[#3a2f2a]/30 py-4 rounded-2xl font-medium">Back to the market</button>
+        </div>
+      `
+    }
+
+    function showSellModal() {
+      const modal = document.getElementById('sell-modal')
+      modal.classList.remove('hidden')
+      modal.classList.add('flex')
+      setListingType('product')
+    }
+
+    function hideSellModal() {
+      const modal = document.getElementById('sell-modal')
+      modal.classList.add('hidden')
+      modal.classList.remove('flex')
+    }
+
+    function setListingType(type) {
+      currentListingType = type
+      const prodBtn = document.getElementById('sell-type-product')
+      const servBtn = document.getElementById('sell-type-service')
+      
+      if (type === 'product') {
+        prodBtn.classList.add('!bg-[#b85d42]', '!text-white', '!border-[#b85d42]')
+        prodBtn.classList.remove('border-[#3a2f2a]/20')
+        servBtn.classList.remove('!bg-[#b85d42]', '!text-white', '!border-[#b85d42]')
+        servBtn.classList.add('border-[#3a2f2a]/20')
+      } else {
+        servBtn.classList.add('!bg-[#b85d42]', '!text-white', '!border-[#b85d42]')
+        servBtn.classList.remove('border-[#3a2f2a]/20')
+        prodBtn.classList.remove('!bg-[#b85d42]', '!text-white', '!border-[#b85d42]')
+        prodBtn.classList.add('border-[#3a2f2a]/20')
+      }
+    }
+
+    function createListing() {
+      const title = document.getElementById('sell-title').value.trim()
+      const price = parseInt(document.getElementById('sell-price').value)
+      const location = document.getElementById('sell-location').value.trim()
+      const desc = document.getElementById('sell-description').value.trim() || "Beautiful handmade piece ready to ship or book."
+      
+      if (!title || !price) {
+        alert("Please add a title and price")
+        return
+      }
+      
+      const newItem = {
+        id: Date.now(),
+        type: currentListingType,
+        title,
+        price,
+        maker: "You (Demo Maker)",
+        location: location || "Your City",
+        rating: 5.0,
+        reviews: 0,
+        category: currentListingType === 'product' ? "Custom Commissions" : "Workshops & Classes",
+        desc,
+        image: currentListingType === 'product' 
+          ? "assets/images/7.jpg" 
+          : "assets/images/5.jpg",
+        isUserListing: true
+      }
+      
+      if (currentListingType === 'service') {
+        newItem.duration = "By arrangement"
+        newItem.slots = "Just listed"
+      } else {
+        newItem.inStock = 1
+      }
+      
+      items.unshift(newItem)
+      userListings.push(newItem)
+      
+      hideSellModal()
+      
+      currentFilter = 'all'
+      currentCategory = null
+      document.getElementById('search-input').value = ''
+      
+      document.getElementById('filter-all').classList.add('active')
+      document.getElementById('filter-product').classList.remove('active')
+      document.getElementById('filter-service').classList.remove('active')
+      
+      renderItems()
+      
+      showToast(`Listing published! It is now live in the market.`)
+      
+      setTimeout(() => {
+        document.getElementById('discover').scrollIntoView({ behavior: 'smooth' })
+      }, 600)
+    }
+
+    function showAccountModal() {
+      const modal = document.createElement('div')
+      modal.className = `fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4`
+      modal.innerHTML = `
+        <div class="bg-white w-full max-w-sm rounded-3xl p-8 modal" onclick="event.stopImmediatePropagation()">
+          <div class="flex justify-between">
+            <div>
+              <div class="font-semibold">Alex Rivera</div>
+              <div class="text-xs text-[#5d6f5f]">Maker + buyer • Joined Jan 2025</div>
+            </div>
+            <button onclick="this.closest('.fixed').remove()" class="text-3xl text-[#5d6f5f]">×</button>
+          </div>
+          
+          <div class="mt-8 text-sm space-y-2">
+            <div class="flex justify-between py-1"><span>Orders placed</span> <span class="font-semibold">17</span></div>
+            <div class="flex justify-between py-1"><span>Bookings completed</span> <span class="font-semibold">${bookings.length}</span></div>
+            <div class="flex justify-between py-1"><span>Active listings</span> <span class="font-semibold">${userListings.length}</span></div>
+          </div>
+          
+          <div class="mt-8 text-xs bg-[#f9f4eb] p-4 rounded-2xl text-[#5d6f5f]">
+            You are previewing as both a buyer and a maker. Everything you list or book here is simulated and resets on reload.
+          </div>
+          
+          <button onclick="this.closest('.fixed').remove()" class="mt-6 w-full py-3 border border-[#3a2f2a]/20 rounded-2xl font-medium text-sm">Close</button>
+        </div>
+      `
+      document.body.appendChild(modal)
+    }
+
+    function showToast(msg) {
+      const toast = document.createElement('div')
+      toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-[#3a2f2a] text-[#f9f4eb] text-sm rounded-2xl shadow-xl z-[200]`
+      toast.textContent = msg
+      document.body.appendChild(toast)
+      setTimeout(() => toast.remove(), 2800)
+    }
+
+    function loadMoreItems() {
+      showToast("That's all for the preview. Add your own via 'Sell on Forge'!")
+    }
+
+    function initSearch() {
+      const input = document.getElementById('search-input')
+      input.addEventListener('input', () => {
+        renderItems()
+      })
+    }
+
+    function initFilters() {
+      document.getElementById('filter-all').classList.add('active')
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+          e.preventDefault()
+          document.getElementById('search-input').focus()
+        }
+      })
+    }
+
+    function seedDemoData() {
+      bookings = [
+        {
+          id: 9991,
+          itemId: 2,
+          title: "Pottery Wheel Workshop",
+          maker: "River & Clay Studio",
+          date: "2026-06-14",
+          time: "13:00",
+          price: 95,
+          notes: "For 1 — super excited!",
+          status: "confirmed"
+        }
+      ]
+      updateBookingsCount()
+    }
+
+    function boot() {
+      initTailwind()
+      renderCategories()
+      renderItems()
+      renderMakers()
+      initSearch()
+      initFilters()
+      seedDemoData()
+      updateCartCount()
+      updateBookingsCount()
+      
+      setTimeout(() => {
+        const hint = document.getElementById('filter-service')
+        if (hint && !document.getElementById('search-input').value) {
+          hint.classList.add('ring-1', 'ring-[#b85d42]/30')
+          setTimeout(() => hint.classList.remove('ring-1', 'ring-[#b85d42]/30'), 1600)
+        }
+      }, 5200)
+      
+      console.log('%c[ForgeMarket] Preview ready. Makers deserve better fees.', 'color:#8a6f5e')
+    }
+
+    window.onload = boot
+    
+    window.FM = {
+      addDemoItem: () => { items.unshift(items[3]); renderItems() },
+      clearCart: () => { cart = []; updateCartCount(); },
+      reset: () => window.location.reload()
+    }
+  </script>
+</body>
+</html>
