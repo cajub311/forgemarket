@@ -1,57 +1,43 @@
-**ForgeMarket is now live on GitHub** → https://github.com/cajub311/forgemarket
+# ForgeMarket
 
----
+**Live on GitHub main** — ready for Vercel.
 
-# ForgeMarket — Handmade Marketplace Preview
+A beautiful, fully interactive preview of a fairer handmade marketplace (products + bookable services) with 3.5% fees.
 
-A beautiful, fully interactive preview of a **fairer Etsy alternative** that sells both physical products **and** bookable real-world services — with dramatically better economics for makers.
+## 🚀 Deploy to Vercel (fastest)
 
-## ⭐ Live Preview
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fcajub311%2Fforgemarket)
 
-**Open locally:** `index.html`
+Click the button above → import the repo → instant preview on Vercel.
 
-**One-click deploy (recommended):**
+## Current Status
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/cajub311/forgemarket)
+- `index.html` + full interactive site is on `main`
+- All JS features work (booking, cart with savings math, dynamic listings, etc.)
+- Images are in the local folder (push them after you `gh auth login` + `git push`)
 
-Click the button above → instant public URL.
-
-## What makes ForgeMarket different
-
-- **Only 3.5% platform fee** (Etsy takes ~6.5% + listing fees + processing)
-- **$0 listing fees**
-- Makers keep **96.5%** of every sale
-- Built-in booking system for services & workshops
-- Products + Services in one beautiful feed
-
-## Key Features (fully working)
-
-- Browse products or services with powerful filters
-- Real booking flow (date + time slots)
-- Cart with "Saved vs Etsy" pricing comparison
-- "Sell on Forge" — instantly publish new listings live
-- Gorgeous custom photography
-
-## Deploy in 30 seconds
-
-1. Click the **Deploy to Netlify** button above
-2. Connect your GitHub (one time)
-3. Done — you get a public URL like `forgemarket.netlify.app`
-
-## Local development
+## Quick local check + push
 
 ```bash
-git clone https://github.com/cajub311/forgemarket.git
-cd forgemarket
-open index.html
+cd Projects/maker-market-preview
+
+# Authenticate (one time)
+gh auth login
+
+# Then push everything (including images)
+git push -u origin main
 ```
 
-## Tech
+After pushing images, redeploy on Vercel.
 
-Single-file modern HTML + Tailwind + vanilla JS. Zero build step. Ready for static hosting anywhere.
+## Features
 
----
+- Products & Services in one feed
+- Working booking system with time slots
+- Cart showing "saved vs Etsy"
+- Sell on Forge (add listings live)
+- 3.5% fee positioning throughout
 
-Built live with Grok for robobootcamp • 2026
+Repo: https://github.com/cajub311/forgemarket
 
-Want the real production version next? Just say the word.
+Built with Grok.
